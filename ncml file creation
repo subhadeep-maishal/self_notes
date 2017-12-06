@@ -1,0 +1,16 @@
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  <aggregation dimName="ocean_time" type="joinExisting" recheckEvery="10 min">
+         <scan location="." regExp=".*newcode_norespnoepb.*_[0-9]{5}\.nc$"/>
+  </aggregation>
+</netcdf>
+<netcdf xmlns="http://www.unidata.ucar.edu/namespaces/netcdf/ncml-2.2">
+  <aggregation dimName="ocean_time" type="joinExisting" recheckEvery="10 min">
+         <scan location="." regExp=".*dinsed.*_[0-9]{5}\.nc$"/>
+  </aggregation>
+</netcdf>
+~                                        
+
+for i in $(seq 0 184); do mv s.${i} r.${i}; done;
+newcode_norespnoepb_0000${i}.nc
+
+for i in $(seq 1 8); do mv his_newcode_norespnoepb_0000${i}.nc his_test_sav_0${i}  ; done ;
