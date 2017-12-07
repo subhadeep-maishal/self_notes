@@ -1,0 +1,112 @@
+%  ncwrite Write data to NetCDF file.
+%  
+%      ncwrite(FILENAME, VARNAME, VARDATA) write numerical or char data in
+%      VARDATA to an existing variable VARNAME in the NetCDF file FILENAME.
+%      VARDATA is written starting at the beginning of the variable and
+%      unlimited dimensions are automatically extended if needed.
+%  
+%      If FILENAME or VARNAME do not exist, use NCCREATE first.
+%  
+%      ncwrite(FILENAME, VARNAME, VARDATA, START)
+%      ncwrite(FILENAME, VARNAME, VARDATA, START, STRIDE) writes VARDATA to
+%      an existing variable VARNAME in file FILENAME beginning at the
+%      location given by START. For an N-dimensional variable START is a
+%      vector of 1-based indices of length N specifying the starting
+%      location. The optional argument STRIDE, also of length N,  specifies
+%      the inter-element spacing. STRIDE defaults to a vector of ones. Use
+%      this syntax to append data to an existing variable or write partial
+%      data.
+%  
+%      %If VARNAME already exists, ncwrite expects the datatype of VARDATA to
+%      %match the NetCDF variable datatype. If VARNAME has a fill value,
+%      %'scale_factor' or 'add_offset' attribute, ncwrite expects data in
+%      %double format and will cast VARDATA to the NetCDF data type after
+%      %applying the following attribute conventions in sequence:
+%      %  1. The value of 'add_offset' attribute is subtracted from VARDATA
+%      %  2. VARDATA is divided by the value of 'scale_factor' attribute.
+%      %  3. NaNs in VARDATA are replaced by the value of the '_FillValue'
+%      %     attribute. If this attribute does not exist, ncwrite will try to
+%      %     use the fill value for this variable as reported by the library.
+%  
+%  
+%      %Example: Create a new netcdf4_classic file, write a scalar variable
+%      %with no dimensions. Add the creation time as a global attribute.
+%          nccreate('myfile.nc','pi');
+%          ncwrite('myfile.nc','pi',3.1);
+%          ncwriteatt('myfile.nc','/','creation_time',datestr(now));
+%          % overwrite existing data
+%          ncwrite('myfile.nc','pi',3.1416);
+%          ncdisp('myfile.nc');
+%  
+%     %Example: Create a netcdf4_classic file with a variable defined on an
+%     %unlimited dimension. Write data incrementally to the variable.
+%          nccreate('myncfile.nc','vmark',...
+%                   'Dimensions', {'time', inf, 'cols', 6},...
+%                   'ChunkSize',  [3 3],...
+%                   'DeflateLevel', 2);
+%          ncwrite('myncfile.nc','vmark', eye(3),[1 1]);
+%          varData = ncread('myncfile.nc','vmark');
+%          disp(varData);
+%          ncwrite('myncfile.nc','vmark',fliplr(eye(3)),[1 4]);
+%          varData = ncread('myncfile.nc','vmark');
+%          disp(varData);
+
+ 
+clear all ; close all ; clc ; 
+srcFile='wfh_oxycarb_initial.nc';
+netcdf_load(srcFile); 
+[xi yi nlayer ocean_time]=size(salt);
+
+dstfile='myfile.nc' ; 
+ 
+copyfile(srcFile,dstfile);
+fileattrib(dstfile,'+w');
+ncid = netcdf.open('myfile.nc','WRITE');
+% 
+for j=1:yi
+  for i=1:xi
+    for n=1:ocean_time
+      agb(i,j,n)=11.9*mask_rho(i,j);
+      bgb(i,j,n)=71.3*mask_rho(i,j);
+      for k=1:nlayer
+        Dinsed(i,j,k,n)=1000.0*mask_rho(i,j);
+      end 
+    end
+  end
+end 
+ 
+nccreate('myfile.nc','AGB','Dimensions',{'xi_rho' xi 'eta_rho' yi 'ocean_time' ........
+    ocean_time},'Format','classic');
+ncwrite('myfile.nc','AGB',agb);
+ncwriteatt('myfile.nc','AGB','long_name','Above ground biomass');
+ncwriteatt('myfile.nc','AGB','units','millimole-N/m2');
+ncwriteatt('myfile.nc','AGB','time','ocean_time');
+ncwriteatt('myfile.nc','AGB','coordinates','lon_rho lat_rho');
+%ncwriteatt('myfile.nc','AGB','field','depth, scalar, serie');
+ncwriteatt('myfile.nc','AGB','field','AGB, scalar, series');
+%ncwriteatt('myfile.nc','AGB','_FillValue','1e+37');
+
+nccreate('myfile.nc','BGB','Dimensions',{'xi_rho' xi 'eta_rho' yi 'ocean_time'...........
+    ocean_time},'Format','classic');
+ncwrite('myfile.nc','BGB',bgb);
+ncwriteatt('myfile.nc','BGB','long_name','Above ground biomass');
+ncwriteatt('myfile.nc','BGB','units','millimole-N/m2');
+ncwriteatt('myfile.nc','BGB','time','ocean_time');
+ncwriteatt('myfile.nc','BGB','coordinates','lon_rho lat_rho');
+%ncwriteatt('myfile.nc','AGB','field','depth, scalar, serie');
+ncwriteatt('myfile.nc','BGB','field','BGB, scalar, series');
+%ncwriteatt('myfile.nc','BGB','_FillValue','1e+37');
+
+nccreate('myfile.nc','Dinsed','Dimensions',{'xi_rho' xi 'eta_rho' yi 's_rho'.....
+                           nlayer 'ocean_time' ocean_time } ,'Format','classic');
+ncwrite('myfile.nc','Dinsed',Dinsed);
+ncwriteatt('myfile.nc','Dinsed','long_name','Dissolved inorganic N in sediment column');
+ncwriteatt('myfile.nc','Dinsed','units','millimole');
+ncwriteatt('myfile.nc','Dinsed','time','ocean_time');
+ncwriteatt('myfile.nc','Dinsed','coordinates','lon_rho lat_rho s_rho');
+%ncwriteatt('myfile.nc','AGB','field','depth, scalar, serie');
+ncwriteatt('myfile.nc','Dinsed','field','Dinsed, scalar, series');
+%ncwriteatt('myfile.nc','Dinsed','_FillValue','1e+37');
+
+ncdisp('myfile.nc');
+ 
