@@ -110,3 +110,57 @@ ncwriteatt('myfile.nc','Dinsed','field','Dinsed, scalar, series');
 
 ncdisp('myfile.nc');
  
+-------------------------------------
+lear all ; close all ; clc ; 
+srcFile='ocean_rst.nc';
+netcdf_load(srcFile); 
+
+x_rho=ncread(srcFile,'x_rho');
+y_rho=ncread(srcFile,'y_rho'); 
+%dye_12=ncread(srcFile,'dye_01') ; 
+
+[xi yi nlayer ocean_time]=size(temp) 
+
+dstfile='myfile.nc' ; 
+%  
+ copyfile(srcFile,dstfile);
+ fileattrib(dstfile,'+w');
+ ncid = netcdf.open('myfile.nc','WRITE');
+% % 
+
+ dumid2 = netcdf.inqVarID(ncid,'temp'); 
+ dumid1 = netcdf.inqVarID(ncid,'dye_01') ;
+ dumid3 = netcdf.inqVarID(ncid,'dye_02'); 
+ dumid4 = netcdf.inqVarID(ncid,'dye_03'); 
+ dumid5 = netcdf.inqVarID(ncid,'dye_04'); 
+
+ for j=1:yi
+   for i=1:xi
+     for n=1:ocean_time
+       for k=1:nlayer   
+         dye_01(i,j,k,n)=0.1; 
+         dye_02(i,j,k,n)=0.0; 
+         dye_03(i,j,k,n)=0.0;
+         dye_04(i,j,k,n)=0.0;  
+         if ( x_rho(i,j)>=35000.0 && x_rho(i,j)<=65000.0 ) 
+           dye_01(i,j,k,n)=5.0; 
+         else
+           dye_01(i,j,k,n)=0.1; 
+         end
+       end
+     end
+   end
+ end  
+count=[xi,yi,nlayer,2]; 
+start=[0,0,0,0]; 
+
+for rec=1:ocean_time-1
+ %netcdf.putVar(ncid,dumid,dye_01);
+ start(4)=rec-1; 
+ netcdf.putVar(ncid,dumid1,start,count,dye_01); 
+ netcdf.putVar(ncid,dumid3,start,count,dye_02);
+ netcdf.putVar(ncid,dumid4,start,count,dye_03); 
+ netcdf.putVar(ncid,dumid5,start,count,dye_04); 
+end
+
+netcdf.close(ncid); 
