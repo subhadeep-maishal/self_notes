@@ -1,0 +1,36 @@
+  1 #from sympy import * 
+  2 #from math import exp
+  3 
+  4 from sympy import sin, limit, exp, Symbol
+  5 from sympy.solvers import solve
+  6 
+  7 #x=Symbol('x')
+  8 #y=solve(sin(x)/x)  # 0 is excluded
+  9 #print y
+ 10 
+ 11 c1=Symbol('c1')
+ 12 c2=Symbol('c2')
+ 13 c3=Symbol('c3')
+ 14 
+ 15 lamda=0.75
+ 16 Hmax=5.0
+ 17 Hmin=2.0
+ 18 W=4752.2
+ 19 
+ 20 #eq1=Hmax-c1-c2
+ 21 #print eq1
+ 22 #eq2=Hmin-c1-c2*exp(-c3*(W/2.0)**2) 
+ 23 #print eq2
+ 24 #eq3=Hmax/2.0-c1-c2*exp(-c3*(lamda*W/2.0)**2) 
+ 25 #print eq3 
+ 26 #solve([eq1,eq2,eq3], [c1,c2,c3])
+ 27 
+ 28 
+ 29 #eq1=Hmax-c1-c2
+ 30 #print eq1
+ 31 eq2=Hmin-(5-c2)-c2*exp(-c3*(W/2.0)**2)
+ 32 print eq2
+ 33 eq3=Hmax/2.0-(5-c2)-c2*exp(-c3*(lamda*W/2.0)**2)
+ 34 print eq3
+ 35 solve([eq2,eq3], [c2,c3])
+~                             
