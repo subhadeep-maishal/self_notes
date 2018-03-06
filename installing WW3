@@ -1,0 +1,36 @@
+ 
+INSTALLING WW3
+
+1. ./w3_setup -c gfortran -s Ifremer2 -q ..
+1. ./w3_setup -c Portland -s Ifremer1 -q ..
+ 
+2. in .bashrc 
+nc-config --version
+nc-config --has-nc4
+export WWATCH3_NETCDF=NC4
+export NETCDF_CONFIG/share/apps/netcdf-4.1.3_pgi-12.3/bin/nc-config
+
+source .bashrc
+
+3. ./w3_clean (-c for cleaning all)
+
+4. ./w3_make 
+
+testing small case 
+5.  a) ln3 ctest b) ad3_ctest c) ./ad3 ctest 1 
+
+
+HELP 
+Main installation help:
+
+https://forge.ifremer.fr/plugins/mediawiki/wiki/ww3/index.php/En:installation
+
+User forum:
+
+https://www.lstsrv.ncep.noaa.gov/mailman/listinfo/ncep.list.wwatch3.users
+
+WORSHOP NOTES
+
+http://polar.ncep.noaa.gov/waves/workshop/pdfs/
+http://polar.ncep.noaa.gov/waves/workshop/pdfs/WW3-workshop-exercises-day1-compilation.pdf
+http://polar.ncep.noaa.gov/waves/workshop/pdfs/wwws_2.2.pdf
