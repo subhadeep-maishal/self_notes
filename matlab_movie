@@ -1,0 +1,55 @@
+  clc       ; % clear command window 
+clear all ; % clear all workspace
+close all ; % 
+%%
+%**********GRID READING**************************************************** 
+% Input the file from which you want to get grid
+ 
+url='/media/gadar/DATADRIVE2/marsh_result/marsh_mod_mask_100m.nc'
+%netcdf_load(his_file) ; 
+
+x_rho=ncread(url,'x_rho');y_rho=ncread(url,'y_rho');
+marsh_mask=ncread(url,'marsh_mask');
+Thrust_total=ncread(url,'Thrust_total'); 
+ sand_01=ncread(url,'sand_01') ; 
+ocean_time=ncread(url,'ocean_time');  
+save_dim=size(sand_01);
+
+imax=save_dim(1); jmax=save_dim(2); kmax=save_dim(3);
+ntime=save_dim(4);
+ 
+for nt=1:ntime
+    for j=1:jmax
+        for i=1:imax
+            if(marsh_mask(i,j,1)==0);
+                marsh_mask(i,j,1)=NaN;
+            end
+            temp(i,j,nt)=Thrust_total(i,j,nt)*marsh_mask(i,j,nt);
+        end
+    end 
+end
+
+igrid=5;
+%
+ntime_hours=ocean_time(:)/3600 ; 
+
+vobj=VideoWriter('dye_movie','Motion JPEG AVI'); 
+vob.Quality=300 ;
+vobj.FrameRate=5;
+
+open(vobj) 
+colormap(parula)
+for nt=1:2:ntime
+  pcolorjw(x_rho,y_rho,temp(:,:,nt)) 
+ hold on  
+  
+ xlabel('along-shore (m)')
+ ylabel('cross-shore (m)')
+ 
+ mov=getframe(gcf,[0 0 562 421]) ; 
+ pause(1)
+ writeVideo(vobj,mov);
+ 
+ clf('reset') 
+end 
+close(vobj);
