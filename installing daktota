@@ -1,0 +1,18 @@
+installing dakota on the ubuntu 14.04
+1. step 1:
+downloaded dakota: 
+Dakota 6.4 
+https://dakota.sandia.gov/download.html
+in bashrc 
+alias dakota640='/home/gadar/Documents/softwares_new/dakota-6.4.0/bin/dakota'
+export INSTALL_DIR=/home/gadar/Documents/softwares_new/dakota-6.4.0
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$INSTALL_DIR/lib:$INSTALL_DIR/bin
+
+
+
+libmpi_cxx.so.1 not found error. 
+2. step 2: sudo apt install libblacs-mpi-dev
+
+3. Re: How-To: Solving libXM.so.4 error shold install libmotif4:
+
+sudo apt-get install libmotif4
