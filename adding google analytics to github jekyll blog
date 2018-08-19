@@ -1,0 +1,16 @@
+
+If you are using the minima template provide by Jekyll then -
+
+Add google_analytics: UA-xxxxxxxx-x to your _config.yml
+Create a file _includes/google-analytics.html and add the google analytics js code in it.
+Replace
+
+ga('create', 'UA-xxxxxxxx-x', 'auto');
+with
+
+ga('create', '{{ site.google_analytics }}', 'auto');
+and you are set!
+
+The google analytics code will now display if your site is built in production environment. For reference see the template's source code here - https://github.com/jekyll/minima
+
+You can follow the same approach if you are using a different template by referencing the template's source code and replacing the corresponding files.
