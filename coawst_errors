@@ -1,0 +1,4 @@
+1.-------------------
+libnetcdff.so.6 cannot open shared
+-------------------
+export LD_LIBRARY_PATH="/usr/local/hdf5-1.8.13/lib:/usr/local/zlib-1.2.8/lib:/usr/local/netcdf.4.3.2/lib"
